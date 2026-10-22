@@ -66,6 +66,9 @@ else
 
     claude plugin marketplace add cq27-dev/rag-rat
     claude plugin install rag-rat@rag-rat
+    # install is a no-op when already present; update keeps plugin hooks in sync with the rag-rat binary
+    claude plugin marketplace update rag-rat
+    claude plugin update rag-rat@rag-rat
 
     claude plugin marketplace add JuliusBrussee/caveman
     claude plugin install caveman@caveman
@@ -81,7 +84,7 @@ else
     install_tool "bat" "bat --version" "pkg_install bat"
     install_tool "jq" "jq --version" "pkg_install jq"
     install_tool "fzf" "fzf --version" "pkg_install fzf"
-    install_tool "lefthook" "lefthook --version" "curl -L https://github.com/evilmartians/lefthook/releases/download/v2.1.14/lefthook_2.1.14_Linux_x86_64 --output ~/.local/bin/lefthook && chmod +x ~/.local/bin/lefthook"
+    install_tool "lefthook" "lefthook --version" "curl -fL https://github.com/evilmartians/lefthook/releases/download/v2.1.14/lefthook_2.1.14_$(uname -s | sed s/Darwin/MacOS/)_$(uname -m | sed s/aarch64/arm64/) --output ~/.local/bin/lefthook && chmod +x ~/.local/bin/lefthook"
     install_tool "ai-memory" "ai-memory --version" "mkdir -p ~/.local/bin && curl -fsSL https://raw.githubusercontent.com/akitaonrails/ai-memory/main/bin/ai-memory -o ~/.local/bin/ai-memory && chmod +x ~/.local/bin/ai-memory"
 
     NODE_MAJOR="$(node -v 2>/dev/null | sed 's/^v//' | cut -d. -f1)"

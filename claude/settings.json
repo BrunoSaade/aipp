@@ -1031,7 +1031,7 @@
   },
   "plansDirectory": "./docs/plans/",
   "voice": {
-    "enabled": false,
+    "enabled": true,
     "mode": "hold"
   },
   "skipDangerousModePermissionPrompt": true,
@@ -1041,5 +1041,6 @@
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "voiceEnabled": false
+  "voiceEnabled": true,
+  "switchModelsOnFlag": true
 }

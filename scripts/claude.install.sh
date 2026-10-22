@@ -11,12 +11,12 @@ replace_between() {
     local arquivo="$4"
 
     if grep -Fq "$inicio" "$arquivo"; then
-        awk -v ini="$inicio" \
-            -v end="$fim" \
-            -v content="$conteudo" '
+        # ENVIRON, not -v: BSD awk (macOS) rejects newlines in -v values
+        content="$conteudo" awk -v ini="$inicio" \
+            -v end="$fim" '
         $0 == ini {
             print
-            print content
+            print ENVIRON["content"]
             inside = 1
             next
         }
@@ -230,10 +230,12 @@ if [ -f "$LOCAL/lefthook.yml" ]; then
 else
     ln -s "$SOURCE/lefthook/lefthook.yml" "$LOCAL/lefthook.yml"
 fi
-if command -v lefthook &>/dev/null; then
+if hooks_path=$(git -C "$LOCAL" config --local core.hooksPath); then
+  echo "Warning: core.hooksPath='$hooks_path' (husky?), pulando 'lefthook install' para não sobrescrever." >&2
+elif lefthook --version &>/dev/null; then
   (cd "$LOCAL" && lefthook install)
 else
-  echo "Warning: lefthook não encontrado no PATH, pulando 'lefthook install'." >&2
+  echo "Warning: lefthook ausente ou binário inválido (arch errada?), pulando 'lefthook install'. Reinstale via ./install.sh." >&2
 fi
 git_exclude "lefthook.yml"
 ###########################################################################################

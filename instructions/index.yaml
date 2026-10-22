@@ -3,41 +3,41 @@ instructions:
   - code.instructions.md
   description: General code style rules.
 - name:
-  - test-mutation.instructions.md
-  description: Mutation-testing rules.
-- name:
-  - test-typescript-node-backend.instructions.md
-  description: TS/Node backend testing rules.
+  - agent.instructions.md
+  description: Agent behavior rules.
 - name:
   - pydocs.instructions.md
   description: Google-style docstring rules for Python.
 - name:
-  - node-ts.instructions.md
-  description: Node/TS rules.
-- name:
-  - vue.instructions.md
-  description: Vue Code Rules.
-- name:
-  - http.instructions.md
-  description: REST API design rules.
-- name:
-  - agent.instructions.md
-  description: Agent behavior rules.
-- name:
-  - test-pbt.instructions.md
-  description: Property-based testing rules (fast-check).
+  - python.instructions.md
+  description: Python code rules.
 - name:
   - openapi.instructions.md
   description: Openapi rules.
 - name:
+  - jsdocs.instructions.md
+  description: JSDoc rules.
+- name:
+  - node-ts.instructions.md
+  description: Node/TS rules.
+- name:
   - react.instructions.md
   description: React/JSX rules.
 - name:
-  - python.instructions.md
-  description: Python code rules.
+  - test-mutation.instructions.md
+  description: Mutation-testing rules.
 - name:
-  - jsdocs.instructions.md
-  description: JSDoc rules.
+  - http.instructions.md
+  description: REST API design rules.
+- name:
+  - test-pbt.instructions.md
+  description: Property-based testing rules (fast-check).
+- name:
+  - vue.instructions.md
+  description: Vue Code Rules.
+- name:
+  - test-typescript-node-backend.instructions.md
+  description: TS/Node backend testing rules.
 - name:
   - test.instructions.md
   description: Test Rules.

@@ -12,12 +12,12 @@ replace_between() {
     local arquivo="$4"
 
     if grep -Fq "$inicio" "$arquivo"; then
-        awk -v ini="$inicio" \
-            -v end="$fim" \
-            -v content="$conteudo" '
+        # ENVIRON, not -v: BSD awk (macOS) rejects newlines in -v values
+        content="$conteudo" awk -v ini="$inicio" \
+            -v end="$fim" '
         $0 == ini {
             print
-            print content
+            print ENVIRON["content"]
             inside = 1
             next
         }
