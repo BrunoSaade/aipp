@@ -28,6 +28,10 @@
       "url": "https://mcp.notion.com/mcp",
       "type": "http"
     },
+    "aipp:clickup": {
+      "url": "https://mcp.clickup.com/mcp",
+      "type": "http"
+    },
     "aipp:ssh-mcp": {
       "command": "npx",
       "args": [

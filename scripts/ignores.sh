@@ -1,4 +1,4 @@
-SETTINGS_FILE="$CLAUDE_CONFIG_DIR/aipp-settings.json"
+SETTINGS_FILE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/aipp-settings.json"
 
 if [ -f "$SETTINGS_FILE" ]; then
     while IFS= read -r pattern; do

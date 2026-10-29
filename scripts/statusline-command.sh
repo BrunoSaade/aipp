@@ -7,6 +7,10 @@
 # via rate_limits.five_hour.used_percentage and rate_limits.seven_day.used_percentage
 # Only populated for Pro/Max subscribers after the first API response.
 
+# Statusline runs every second and may be killed mid-run; without this,
+# `git status` takes .git/index.lock and leaves it orphaned, blocking staging.
+export GIT_OPTIONAL_LOCKS=0
+
 # Nerd Font icons: set NERD_FONT=1 to enable glyphs, anything else disables them
 NERD_FONT="${NERD_FONT:-1}"
 
@@ -50,7 +54,7 @@ fi
 # Read JSON input from stdin
 input=$(cat)
 
-echo $input > $CLAUDE_CONFIG_DIR/logs/claude_statusline.json
+echo $input > "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/logs/claude_statusline.json"
 
 # Extract basic information
 folder=$(basename "$(echo "$input" | jq -r '.workspace.current_dir')")
