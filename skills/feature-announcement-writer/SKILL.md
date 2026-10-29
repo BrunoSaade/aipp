@@ -75,6 +75,6 @@ Real runs on three PRs with empty descriptions, in `assets/examples/`:
 
 `announcement*.md` files target WhatsApp/Google Chat unless named `-slack`.
 
-- `pr-10/` QR scan lookup: `announcement.md` (squad), `announcement-slack.md`, `announcement-stakeholders.md`, `announcement-changelog.md`
+- `pr-10/` QR scan lookup: `announcement.md` (squad), `announcement-slack.md`, `announcement-stakeholders.md`, `announcement-changelog.md`, `sources.md`
 - `pr-22/` batch device creation (24 commits, +7k lines): `announcement.md`, `sources.md`
 - `pr-13/` landing page: `announcement.md`, `sources.md` (flags unconfirmed deploy)

@@ -44,7 +44,7 @@ O que testei e o que mudou:
 | Colei a mensagem no WhatsApp e no Slack (prints em `skill/assets/`) | WhatsApp ✅. **Slack ❌**: texto colado no Slack fica puro, e `*negrito*` aparece com os asteriscos. | Slack sai sem nenhum marcador, só com emojis e quebras de linha. O lint reprova `*` no canal slack. |
 | Revisão por um agente especialista em skills | Caminho relativo dos scripts quebrava fora da pasta da skill; um PR inválido abortava o lote inteiro; nomes inconsistentes. | Caminhos a partir da pasta da skill, erro por PR sem derrubar o lote, nomes alinhados. |
 
-**Hoje:** `SKILL.md` com 77 linhas, mais 2 referências e 2 scripts com 22 testes (escritos antes do código).
+**Hoje:** `SKILL.md` com 80 linhas, mais 2 referências e 2 scripts com 32 testes (escritos antes do código).
 
 ## Demo
 
