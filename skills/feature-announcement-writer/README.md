@@ -1,6 +1,6 @@
 # feature-announcement-writer
 
-Transforma um ou mais PRs do GitHub em um anúncio pronto para colar no chat do time (Slack, WhatsApp, Google Chat ou Teams), em pt-BR. Cada linha carrega uma citação literal do PR, conferida por script, e o anúncio pode sair com um vídeo da feature gravado na hora.
+Transforma um ou mais PRs do GitHub em um anúncio pronto para colar no chat do time (Slack, WhatsApp, Google Chat ou Teams), em pt-BR ou, se pedido, em inglês. Cada linha carrega uma citação literal do PR, conferida por script, e o anúncio pode sair com um vídeo da feature gravado na hora.
 
 ## Problema
 
@@ -19,6 +19,7 @@ Gera o anúncio do PR #10 do org/app para o WhatsApp.
 Anuncia os PRs 22 e 13 para os stakeholders no Slack.
 Escreve o changelog pro cliente a partir de https://github.com/org/app/pull/10
 Anuncia o PR 22 no WhatsApp com vídeo.
+Anuncia o PR 22 em inglês no Teams.
 ```
 
 O que a skill faz:
@@ -26,7 +27,7 @@ O que a skill faz:
 1. `scripts/fetch_pr_context.py` monta um pacote de evidências: descrição do PR, PRD/spec/requirements adicionados no PR, títulos dos commits e contagem de arquivos (código, testes, docs, gerados). Nunca baixa o diff inteiro.
 2. Escreve a mensagem para o canal e a audiência pedidos (`squad`, `stakeholders`, `suporte` ou `changelog`).
 3. **Citação verificável:** o rascunho marca cada linha com `[n]` e lista, no fim, o trecho literal da fonte que a sustenta. `scripts/check_citations.py` confere que cada trecho existe mesmo no pacote e reprova linha sem citação. O que é inferência vai para `⚠️ Revisar antes de enviar`, fora da mensagem.
-4. `scripts/lint_announcement.py --channel <canal>` reprova caminho de arquivo, link ou chave do Jira, frase em inglês, formatação errada para o canal e tamanho. A skill só entrega depois do `ok` dos dois scripts.
+4. `scripts/lint_announcement.py --channel <canal> --lang <pt-br|en>` reprova caminho de arquivo, link ou chave do Jira, frase no idioma errado, formatação errada para o canal e tamanho. A skill só entrega depois do `ok` dos dois scripts.
 5. **Vídeo (se pedido):** grava o fluxo da feature e anexa ao anúncio. Detalhes abaixo.
 
 A skill não envia nada: entrega o texto (e o caminho do vídeo) para tu revisar e colar no canal.
@@ -55,7 +56,7 @@ Com `pytest` instalado:
 python3 -m pytest skill/scripts
 ```
 
-42 testes cobrindo os 3 scripts (`fetch_pr_context.py`, `check_citations.py`, `lint_announcement.py`).
+45 testes cobrindo os 3 scripts (`fetch_pr_context.py`, `check_citations.py`, `lint_announcement.py`).
 
 ### Exemplos
 

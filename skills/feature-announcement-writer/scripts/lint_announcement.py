@@ -2,11 +2,11 @@
 """Deterministic checks for a generated feature announcement.
 
 Usage:
-    python lint_announcement.py [FILE] [--max-chars N] [--channel slack|whatsapp|gchat|teams]
+    python lint_announcement.py [FILE] [--max-chars N] [--channel slack|whatsapp|gchat|teams] [--lang pt-br|en]
 
 Reads the announcement from FILE (or stdin). Prints one finding per line as
 `<check> line <n>: <snippet>` and exits 1 when any finding exists, 0 otherwise.
-Checks: leaked file paths, Jira links/keys, English sentences, channel formatting, total length.
+Checks: leaked file paths, Jira links/keys, sentences in the wrong language, channel formatting, total length.
 """
 
 import argparse
@@ -14,7 +14,7 @@ import re
 import sys
 
 DEFAULT_MAX_CHARS = 3000
-MIN_ENGLISH_STOPWORDS = 3
+MIN_FOREIGN_STOPWORDS = 3
 
 CODE_EXTENSIONS = "ts|tsx|js|jsx|mjs|py|go|java|kt|rb|php|cs|sql|css|scss|html|vue|json|ya?ml|toml|md|sh"
 PATH_PATTERN = re.compile(rf"\b[\w./-]*[\w-]+\.(?:{CODE_EXTENSIONS})\b")
@@ -65,11 +65,19 @@ def find_jira_refs(line):
     return [key.group(0) for key in keys if key.group(1) not in NON_TICKET_PREFIXES]
 
 
-def find_english(line):
+# lang -> (name of the language that must not appear, its stopwords, the expected language's stopwords)
+LANGUAGES = {
+    "pt-br": ("english", ENGLISH_STOPWORDS, PORTUGUESE_STOPWORDS),
+    "en": ("portuguese", PORTUGUESE_STOPWORDS, ENGLISH_STOPWORDS),
+}
+DEFAULT_LANG = "pt-br"
+
+
+def find_foreign(line, foreign_words, expected_words):
     words = WORD_PATTERN.findall(line.lower())
-    english_count = sum(word in ENGLISH_STOPWORDS for word in words)
-    portuguese_count = sum(word in PORTUGUESE_STOPWORDS for word in words)
-    if english_count >= MIN_ENGLISH_STOPWORDS and english_count > portuguese_count:
+    foreign_count = sum(word in foreign_words for word in words)
+    expected_count = sum(word in expected_words for word in words)
+    if foreign_count >= MIN_FOREIGN_STOPWORDS and foreign_count > expected_count:
         return [line.strip()]
     return []
 
@@ -79,11 +87,16 @@ def find_format_issues(line, channel):
     return [name for name, pattern in FORMAT_PATTERNS.items() if name not in allowed and pattern.search(line)]
 
 
-LINE_CHECKS = {"path": find_paths, "jira": find_jira_refs, "english": find_english}
+LINE_CHECKS = {"path": find_paths, "jira": find_jira_refs}
 
 
-def lint(text, max_chars, channel=DEFAULT_CHANNEL):
-    checks = {**LINE_CHECKS, "format": lambda line: find_format_issues(line, channel)}
+def lint(text, max_chars, channel=DEFAULT_CHANNEL, lang=DEFAULT_LANG):
+    foreign_name, foreign_words, expected_words = LANGUAGES[lang]
+    checks = {
+        **LINE_CHECKS,
+        foreign_name: lambda line: find_foreign(line, foreign_words, expected_words),
+        "format": lambda line: find_format_issues(line, channel),
+    }
     findings = []
     for line_number, line in enumerate(text.splitlines(), start=1):
         for check_name, check in checks.items():
@@ -98,8 +111,9 @@ def main():
     parser.add_argument("file", nargs="?", type=argparse.FileType("r", encoding="utf-8"), default=sys.stdin)
     parser.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
     parser.add_argument("--channel", choices=CHANNELS, default=DEFAULT_CHANNEL)
+    parser.add_argument("--lang", choices=LANGUAGES, default=DEFAULT_LANG)
     args = parser.parse_args()
-    findings = lint(args.file.read(), args.max_chars, args.channel)
+    findings = lint(args.file.read(), args.max_chars, args.channel, args.lang)
     print("\n".join(findings) if findings else "ok")
     return 1 if findings else 0
 

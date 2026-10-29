@@ -1,14 +1,14 @@
 ---
 name: feature-announcement-writer
-description: Generate a ready-to-send pt-BR feature announcement for team chat (Slack, WhatsApp, Google Chat, Teams) from one or more GitHub PRs or a pasted PR description. Reads PR body, spec/PRD docs and commits via gh, backs every line with a verbatim quote checked by script, lints channel formatting, adapts to audiences (squad, stakeholders, suporte, end-user changelog), and can attach a recorded video of the feature via the demo skill. Use when user says "announce this feature", "write the team announcement for PR 22", "draft a message about this PR for the channel", "anuncia essa feature", "gera o comunicado do PR", "escreve o changelog pro cliente", or "anuncia o PR 22 com vídeo". Do NOT use for writing the PR description itself (use generate-pr-description), versioned release-notes files, or marketing copy.
+description: Generate a ready-to-send pt-BR (or English, on request) feature announcement for team chat (Slack, WhatsApp, Google Chat, Teams) from one or more GitHub PRs or a pasted PR description. Reads PR body, spec/PRD docs and commits via gh, backs every line with a verbatim quote checked by script, lints channel formatting, adapts to audiences (squad, stakeholders, suporte, end-user changelog), and can attach a recorded video of the feature via the demo skill. Use when user says "announce this feature", "write the team announcement for PR 22", "draft a message about this PR for the channel", "anuncia essa feature", "gera o comunicado do PR", "escreve o changelog pro cliente", or "anuncia o PR 22 com vídeo", "announce PR 22 in English". Do NOT use for writing the PR description itself (use generate-pr-description), versioned release-notes files, or marketing copy.
 metadata:
   author: Bruno Saade - github.com/BrunoSaade
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Feature Announcement Writer
 
-Turn a merged (or ready) PR into a chat message the whole team can read: what changed, why it matters, what to watch. Output is always Brazilian Portuguese (`pt-BR`), even though these instructions are in English.
+Turn a merged (or ready) PR into a chat message the whole team can read: what changed, why it matters, what to watch. Output is Brazilian Portuguese (`pt-BR`) by default, even though these instructions are in English. Write in English (`en`) only when the user asks ("em inglês", "in English", `en`); any other language → say only `pt-BR` and `en` are supported. Message section headers follow the chosen language; `⚠️ Revisar antes de enviar` notes stay in the conversation language; quotes in `draft.md` stay verbatim in the source's language.
 
 Paths below (`scripts/`, `references/`, `assets/`) are relative to this skill's base directory. Run scripts by absolute path, e.g. `python <skill-base-dir>/scripts/lint_announcement.py`, since the working directory is usually the user's repo.
 
@@ -57,7 +57,7 @@ Other audiences change emphasis and length, not facts: see `references/audiences
 - Mention automated tests only when the pack shows `tests:` > 0 or the description says so.
 - Manual testing appears only as the closing call to report issues.
 - Emojis organize sections (🚀 title, ✨ changes, 📝 forms, 🔎 search/filters, 🛡️ safety, 🚫 restrictions, 🔄 compatibility, 💬 messages/copy, 🧪 tests, 🎯 benefits, 🙌 closing); not one per sentence.
-- Never include: file paths, test commands, Jira links/keys, English sentences, `**double asterisk**` (any `*` on Slack), verbatim PR text.
+- Never include: file paths, test commands, Jira links/keys, sentences in the other language, `**double asterisk**` (any `*` on Slack), verbatim PR text.
 
 ## Evidence gate
 
@@ -66,10 +66,10 @@ Every sentence must quote its source: PR body, a doc in the pack, a commit headl
 1. Save the source to `pack.md`: the `fetch_pr_context.py` output (redirect stdout), or the pasted text as-is.
 2. Write `draft.md`: the message with `[n]` at the end of every line that states a fact (several allowed: `[1][3]`), `[—]` on lines with no fact (title, section header, closing), then a `---fontes---` line and one `[n] "verbatim quote from pack.md"` per source. Quote the pack exactly (≥ 15 chars, unaccented docs stay unaccented); never paraphrase inside the quotes. No quote → drop the claim; never fill gaps with plausible benefits or metrics ("em segundos", "50% mais rápido").
 3. Run `python scripts/check_citations.py pack.md draft.md --out message.md`. Fix every finding (drop the claim or quote the real text) and repeat until `ok`. Reread each `no claim:` line it lists: a fact hidden behind `[—]` is a cheat.
-4. Run `python scripts/lint_announcement.py message.md --channel <channel>` (add `--max-chars 800` for `stakeholders`/`changelog`). Fix in `draft.md`, rerun both until `ok`.
+4. Run `python scripts/lint_announcement.py message.md --channel <channel> --lang <pt-br|en>` (add `--max-chars 800` for `stakeholders`/`changelog`). Fix in `draft.md`, rerun both until `ok`.
 5. Reasonable but unstated inferences, unconfirmed spec items and anything that depends on deploy status go to `⚠️ Revisar antes de enviar`, outside the message.
 
-`check_citations.py` proves each quote exists in the source, not that it supports the sentence; one quote, one claim keeps that easy to eyeball. The lint catches paths, Jira refs, English, formatting and length.
+`check_citations.py` proves each quote exists in the source, not that it supports the sentence; one quote, one claim keeps that easy to eyeball. The lint catches paths, Jira refs, wrong-language sentences, formatting and length.
 
 ## Video (opt-in)
 

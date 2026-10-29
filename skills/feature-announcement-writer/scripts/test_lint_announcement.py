@@ -106,3 +106,29 @@ def test_reads_file_argument(tmp_path):
         check=False,
     )
     assert result.returncode == 0, result.stdout
+
+
+CLEAN_EN = """🚀 Order export to CSV
+
+Hey team, you can now export the orders of the month to a spreadsheet from the admin panel.
+
+✨ What changed?
+📝 The admin picks the period and the system builds the file for you.
+
+If anything looks off, report it in the squad channel. 🙌
+"""
+
+
+def test_english_announcement_passes_with_lang_en():
+    result = _lint(CLEAN_EN, "--lang", "en")
+    assert result.returncode == 0, result.stdout
+
+
+def test_english_announcement_fails_with_default_lang():
+    assert _lint(CLEAN_EN).returncode == 1
+
+
+def test_portuguese_sentence_fails_with_lang_en():
+    result = _lint(CLEAN_EN + "\nAgora é possível exportar os pedidos do mês para uma planilha.\n", "--lang", "en")
+    assert result.returncode == 1
+    assert "portuguese" in result.stdout
