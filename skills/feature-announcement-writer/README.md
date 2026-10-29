@@ -93,7 +93,7 @@ O que testei e o que mudou:
 
 ## Demo
 
-Uso real da skill do começo ao fim, gravado na minha tela (3 min): [`exemplo_de_uso.mp4`](exemplo_de_uso.mp4).
+Uso real da skill do começo ao fim, gravado na minha tela (3 min): [vídeo no Google Drive](https://drive.google.com/file/d/1KcI260_Ld31Rqc_YiG4Cw6vhtfnp3QYN/view?usp=sharing).
 
 Vídeo gravado pela própria skill a partir do prompt "anuncia o PR 22 no WhatsApp com vídeo" (19 s: cria um lote de 5 dispositivos e baixa o ZIP de QR codes): [`skill/assets/examples/pr-22/video.mp4`](skill/assets/examples/pr-22/video.mp4).
 
@@ -109,6 +109,5 @@ bruno-saade.zip
 │   ├── scripts/      fetch_pr_context.py, check_citations.py, lint_announcement.py + testes
 │   └── assets/       examples/ (PRs 10, 13 e 22, com o vídeo) e print do WhatsApp
 ├── README.md
-├── dump.md
-└── exemplo_de_uso.mp4
+└── dump.md
 ```
