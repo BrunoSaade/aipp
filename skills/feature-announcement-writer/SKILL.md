@@ -1,9 +1,9 @@
 ---
 name: feature-announcement-writer
-description: Generate a ready-to-send pt-BR feature announcement for team chat (Slack, WhatsApp, Google Chat, Teams) from one or more GitHub PRs or a pasted PR description. Reads PR body, spec/PRD docs and commits via gh, traces every claim to its source, lints channel formatting, and adapts to audiences (squad, stakeholders, suporte, end-user changelog). Use when user says "announce this feature", "write the team announcement for PR 22", "draft a message about this PR for the channel", "anuncia essa feature", "gera o comunicado do PR", or "escreve o changelog pro cliente". Do NOT use for writing the PR description itself (use generate-pr-description), versioned release-notes files, or marketing copy.
+description: Generate a ready-to-send pt-BR feature announcement for team chat (Slack, WhatsApp, Google Chat, Teams) from one or more GitHub PRs or a pasted PR description. Reads PR body, spec/PRD docs and commits via gh, backs every line with a verbatim quote checked by script, lints channel formatting, adapts to audiences (squad, stakeholders, suporte, end-user changelog), and can attach a recorded video of the feature via the demo skill. Use when user says "announce this feature", "write the team announcement for PR 22", "draft a message about this PR for the channel", "anuncia essa feature", "gera o comunicado do PR", "escreve o changelog pro cliente", or "anuncia o PR 22 com vídeo". Do NOT use for writing the PR description itself (use generate-pr-description), versioned release-notes files, or marketing copy.
 metadata:
   author: Bruno Saade - github.com/BrunoSaade
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Feature Announcement Writer
@@ -19,9 +19,9 @@ Paths below (`scripts/`, `references/`, `assets/`) are relative to this skill's 
    - Pasted text or a `.md` file → use it as the only source.
    - `gh` fails (auth, no repo access) → show the exact error, suggest `gh auth login` / `gh auth switch` or pasting the PR text. Never invent PR content.
 2. **Pick channel and audience.** Defaults: `slack`, `squad`. Use what the user states; ask only when they want several audiences and didn't name them. Rules: `references/channels.md`, `references/audiences.md`.
-3. **Write the message** (structure below), one per audience.
-4. **Evidence gate** (below), then lint.
-5. **Reply**: the message(s), then outside them a short `🔍 Fontes` list and, if any, `⚠️ Revisar antes de enviar`.
+3. **Write the cited draft** (structure below), one per audience.
+4. **Evidence gate** (below): citations check, then lint.
+5. **Reply**: the message(s) from `message.md`, then outside them `🔍 Fontes` (the verified `[n] "quote"` list) and, if any, `⚠️ Revisar antes de enviar`. Video requested → see Video (opt-in).
 
 ## Message structure (`squad`)
 
@@ -61,20 +61,31 @@ Other audiences change emphasis and length, not facts: see `references/audiences
 
 ## Evidence gate
 
-Every sentence must trace to the source: PR body, a doc in the pack, a commit headline, or the file summary.
+Every sentence must quote its source: PR body, a doc in the pack, a commit headline, or the file summary. Work in a temp dir inside the user's repo.
 
-1. Map each claim to its source. Drop unsourced claims; never fill gaps with plausible benefits or metrics ("em segundos", "50% mais rápido").
-2. Reasonable but unstated inferences, unconfirmed spec items and anything that depends on deploy status go to `⚠️ Revisar antes de enviar`, outside the message.
-3. Save each message to a temp file and run `python scripts/lint_announcement.py <file> --channel <channel>` (add `--max-chars 800` for `stakeholders`/`changelog`). Fix every finding; repeat until `ok`.
+1. Save the source to `pack.md`: the `fetch_pr_context.py` output (redirect stdout), or the pasted text as-is.
+2. Write `draft.md`: the message with `[n]` at the end of every line that states a fact (several allowed: `[1][3]`), `[—]` on lines with no fact (title, section header, closing), then a `---fontes---` line and one `[n] "verbatim quote from pack.md"` per source. Quote the pack exactly (≥ 15 chars, unaccented docs stay unaccented); never paraphrase inside the quotes. No quote → drop the claim; never fill gaps with plausible benefits or metrics ("em segundos", "50% mais rápido").
+3. Run `python scripts/check_citations.py pack.md draft.md --out message.md`. Fix every finding (drop the claim or quote the real text) and repeat until `ok`. Reread each `no claim:` line it lists: a fact hidden behind `[—]` is a cheat.
+4. Run `python scripts/lint_announcement.py message.md --channel <channel>` (add `--max-chars 800` for `stakeholders`/`changelog`). Fix in `draft.md`, rerun both until `ok`.
+5. Reasonable but unstated inferences, unconfirmed spec items and anything that depends on deploy status go to `⚠️ Revisar antes de enviar`, outside the message.
 
-The lint catches paths, Jira refs, English, formatting and length. It cannot catch an invented fact: step 1 is on you.
+`check_citations.py` proves each quote exists in the source, not that it supports the sentence; one quote, one claim keeps that easy to eyeball. The lint catches paths, Jira refs, English, formatting and length.
+
+## Video (opt-in)
+
+Only when the user asks for a video/demo and the PR changes a screen. Needs the `demo` skill (Tech Leads Club), Docker and the app running locally.
+
+1. Pick one flow the cited claims already describe (PRD user story, main commit). The video shows shipped behavior; it never adds a claim.
+2. Hand it to the `demo` skill: name `pr-<n>-<flow>`, sign in before `record()`, record, then check 3-4 frames. If sign-in needs a secret, start the app with a local-only override (e.g. `wrangler dev --var ADMIN_PASSWORD:demo-local-only`) instead of reading or hardcoding the real one.
+3. Add `🎥 Vídeo em anexo: <fluxo> [n]` right after the opening line, cited like any other line, and give the `video.mp4` path in the reply to attach on send.
+4. Recording fails (app down, no Docker, `failed.json`) → send the announcement without the line and say why. The text never waits on the video.
 
 ## Examples
 
-Real runs on three PRs with empty descriptions, in `assets/examples/`:
+Real runs on three PRs with empty descriptions, in `assets/examples/` (`pr-13` predates the citation check):
 
 `announcement*.md` files target WhatsApp/Google Chat unless named `-slack`.
 
-- `pr-10/` QR scan lookup: `announcement.md` (squad), `announcement-slack.md`, `announcement-stakeholders.md`, `announcement-changelog.md`, `sources.md`
-- `pr-22/` batch device creation (24 commits, +7k lines): `announcement.md`, `sources.md`
+- `pr-10/` QR scan lookup: `draft.md` (cited draft that passed `check_citations.py`), `announcement.md` (squad), `announcement-slack.md`, `announcement-stakeholders.md`, `announcement-changelog.md`
+- `pr-22/` batch device creation (24 commits, +7k lines): `draft.md`, `announcement.md` (with the `🎥` line), `video.mp4` (the real recording)
 - `pr-13/` landing page: `announcement.md`, `sources.md` (flags unconfirmed deploy)

@@ -1,6 +1,6 @@
 🚀 *Busca de dispositivos por leitura de QR code no backoffice*
 
-Pessoal, disponibilizamos uma melhoria no backoffice para agilizar a identificação de dispositivos físicos: agora basta apontar a câmera para o QR code impresso no dispositivo.
+Pessoal, disponibilizamos uma melhoria no backoffice para identificar dispositivos físicos: agora basta apontar a câmera para o QR code impresso no dispositivo.
 
 ✨ *O que mudou?*
 
@@ -15,11 +15,10 @@ Pessoal, disponibilizamos uma melhoria no backoffice para agilizar a identifica�
 
 🔄 O QR code impresso nos dispositivos continua o mesmo: nada precisa ser reimpresso.
 
-🧪 Foram adicionados testes automatizados para a leitura do QR code e para as novas rotas da tela.
+🧪 Foram adicionados testes automatizados para a leitura do QR code.
 
 🎯 *Benefícios da melhoria*
 - Identificação do dispositivo direto pela câmera, com ele em mãos.
-- Menos erros de digitação na busca manual.
 - Alternativa manual garantida quando a câmera não estiver disponível.
 
 ⚠️ A câmera só funciona em conexão segura (HTTPS) e a leitura nativa é mais completa no Chrome e no Edge.
