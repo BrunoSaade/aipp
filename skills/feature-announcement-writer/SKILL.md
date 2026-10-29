@@ -73,7 +73,7 @@ Every sentence must quote its source: PR body, a doc in the pack, a commit headl
 
 ## Video (opt-in)
 
-Only when the user asks for a video/demo and the PR changes a screen. Needs the `demo` skill (Tech Leads Club), Docker and the app running locally.
+Only when the user asks for a video/demo and the PR changes a screen. Needs the `demo` skill (Tech Leads Club; missing → suggest `npx @tech-leads-club/agent-skills install -s demo`), Docker and the app running locally.
 
 1. Pick one flow the cited claims already describe (PRD user story, main commit). The video shows shipped behavior; it never adds a claim.
 2. Hand it to the `demo` skill: name `pr-<n>-<flow>`, sign in before `record()`, record, then check 3-4 frames. If sign-in needs a secret, start the app with a local-only override (e.g. `wrangler dev --var ADMIN_PASSWORD:demo-local-only`) instead of reading or hardcoding the real one.

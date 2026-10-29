@@ -11,7 +11,7 @@ Pick the target channel before writing. Default: Slack. Lint with the flag below
 
 Rules:
 
-- **Slack gets no markers at all.** Users paste the message into the composer, and Slack keeps pasted text plain: `*text*` shows literal asterisks (confirmed by screenshot, `assets/slack_evidence.png`, and by Slack help below). Slack mrkdwn only renders for typed text or API/webhook posts.
+- **Slack gets no markers at all.** Users paste the message into the composer, and Slack keeps pasted text plain: `*text*` shows literal asterisks (confirmed by pasting into Slack and by Slack help below). Slack mrkdwn only renders for typed text or API/webhook posts.
 - **Never use `**double asterisk**`** on any channel; none documents it.
 - Title = 🚀 line, never a `#` heading (only Teams renders headings).
 - Teams renders Markdown only when sent from desktop/web, not mobile.
