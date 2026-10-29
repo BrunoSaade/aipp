@@ -85,8 +85,9 @@ O que testei e o que mudou:
 | Refiz o anúncio do PR 10 com a citação obrigatória | Três trechos da v2 não tinham fonte literal: "agilizar", "testes das novas rotas", "menos erros de digitação". | Saíram do anúncio. O que ninguém consegue citar não vai pra mensagem. |
 | Anúncio de tela nova só em texto | QA e produto ainda precisavam abrir o app para entender o fluxo. | Passo opcional de vídeo com a skill `demo` da TLC: o fluxo vem das próprias citações, então o vídeo não inventa nada. Gravado no PR 22: lote de 5 dispositivos criado e ZIP baixado em 19 s. |
 | Login do app de exemplo exige uma senha secreta | Ler o arquivo de segredos ou deixar a senha no script do vídeo vazaria a credencial. | Sobe o app com uma senha só local (`wrangler dev --var ADMIN_PASSWORD:demo-local-only`); o script nunca vê a real. |
+| Pedi o anúncio em inglês para um time que não fala português | O lint reprovava qualquer frase em inglês, então o anúncio nunca passava. | `--lang pt-br\|en` no lint (pt-BR continua padrão; em `en` ele reprova frase em português), com 3 testes escritos antes do código. As citações seguem literais, no idioma do PR. |
 
-**Hoje:** `SKILL.md` com 91 linhas, mais 2 referências e 3 scripts com 42 testes (escritos antes do código).
+**Hoje:** `SKILL.md` com 91 linhas, mais 2 referências e 3 scripts com 45 testes (escritos antes do código).
 
 **Relação com a TLC:** é uma skill nova. O passo de vídeo usa a skill `demo` do catálogo da TLC como está, sem modificá-la.
 
