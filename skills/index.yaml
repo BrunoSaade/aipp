@@ -8,6 +8,16 @@ skills:
     spec', 'check spec inconsistencies', 'find implicit requirements', or 'validate
     design.md and tasks.md'.
 - name:
+  - demo
+  description: Record a demo video of a web app feature or flow on a real desktop
+    (Docker, Xvfb, XFCE, real X cursor), producing an mp4 plus a click/hover/scroll/type
+    telemetry file. Takes a flow description, an existing demo name or path, or init.
+    Use when the user says "record a demo of the checkout", "gravar um demo dessa
+    feature", "make a screencast of this flow", "video for the changelog", "re-record
+    the checkout demo", "refresh the demo video", or "demo init". Do NOT use for general
+    browser testing or automation that needs no video (use playwright-skill), page
+    debugging or network inspection (use chrome-devtools), or static screenshots.
+- name:
   - leet-code-patterns
   description: 'Expert guidance on solving LeetCode and coding interview problems
     using the 15 most important algorithmic patterns. Use this skill whenever the
@@ -1375,6 +1385,19 @@ skills:
     manually paste any code.
 
     '
+- name:
+  - feature-announcement-writer
+  description: Generate a ready-to-send pt-BR (or English, on request) feature announcement
+    for team chat (Slack, WhatsApp, Google Chat, Teams) from one or more GitHub PRs
+    or a pasted PR description. Reads PR body, spec/PRD docs and commits via gh, backs
+    every line with a verbatim quote checked by script, lints channel formatting,
+    adapts to audiences (squad, stakeholders, suporte, end-user changelog), and can
+    attach a recorded video of the feature via the demo skill. Use when user says
+    "announce this feature", "write the team announcement for PR 22", "draft a message
+    about this PR for the channel", "anuncia essa feature", "gera o comunicado do
+    PR", "escreve o changelog pro cliente", or "anuncia o PR 22 com vídeo", "announce
+    PR 22 in English". Do NOT use for writing the PR description itself (use generate-pr-description),
+    versioned release-notes files, or marketing copy.
 - name:
   - extract-automation-candidates
   description: Mine Claude Code session transcripts, git commit history, and spec
