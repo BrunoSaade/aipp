@@ -1,0 +1,453 @@
+{
+ "uid": "claude-code-cost",
+ "title": "Claude Code — custo e tokens",
+ "schemaVersion": 39,
+ "time": {
+  "from": "now-7d",
+  "to": "now"
+ },
+ "refresh": "1m",
+ "panels": [
+  {
+   "id": 1,
+   "title": "Custo no período",
+   "type": "stat",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(max_over_time(claude_code_cost_usage_USD_total[$__range]))",
+     "legendFormat": "",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "title": "Tokens no período",
+   "type": "stat",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 6,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(max_over_time(claude_code_token_usage_tokens_total[$__range]))",
+     "legendFormat": "",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "title": "Cache hit (input)",
+   "type": "stat",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(max_over_time(claude_code_token_usage_tokens_total{type=\"cacheRead\"}[$__range])) / sum(max_over_time(claude_code_token_usage_tokens_total{type=~\"input|cacheRead|cacheCreation\"}[$__range]))",
+     "legendFormat": "",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "title": "Sessões",
+   "type": "stat",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 18,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(max_over_time(claude_code_session_count_total[$__range]))",
+     "legendFormat": "",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "title": "Custo por modelo (sessões ativas, janela 1h)",
+   "type": "timeseries",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 24,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (model)(max_over_time(claude_code_cost_usage_USD_total[1h]))",
+     "legendFormat": "{{model}}",
+     "instant": false
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "title": "Custo por skill",
+   "type": "bargauge",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sort_desc(sum by (skill_name)(max_over_time(claude_code_cost_usage_USD_total{skill_name!=\"\"}[$__range])))",
+     "legendFormat": "{{skill_name}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "title": "Custo por agente",
+   "type": "bargauge",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sort_desc(sum by (agent_name)(max_over_time(claude_code_cost_usage_USD_total{agent_name!=\"\"}[$__range])))",
+     "legendFormat": "{{agent_name}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "title": "Custo por servidor MCP",
+   "type": "bargauge",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sort_desc(sum by (mcp_server_name)(max_over_time(claude_code_cost_usage_USD_total{mcp_server_name!=\"\"}[$__range])))",
+     "legendFormat": "{{mcp_server_name}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "title": "Tokens por tipo",
+   "type": "piechart",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 20,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (type)(max_over_time(claude_code_token_usage_tokens_total[$__range]))",
+     "legendFormat": "{{type}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "title": "Custo por origem (query_source)",
+   "type": "piechart",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 20,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (query_source)(max_over_time(claude_code_cost_usage_USD_total[$__range]))",
+     "legendFormat": "{{query_source}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "title": "Custo por sessão (top 10)",
+   "type": "bargauge",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 20,
+    "w": 8,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD"
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "legend": {
+     "displayMode": "table",
+     "placement": "right"
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "topk(10, sum by (session_id)(max_over_time(claude_code_cost_usage_USD_total[$__range])))",
+     "legendFormat": "{{session_id}}",
+     "instant": true
+    }
+   ]
+  }
+ ],
+ "description": "ponytail: sums max_over_time of per-session cumulative counters; a session that started before the range is counted in full. Switch to OTEL delta temporality + recording rules if exact range cost matters."
+}

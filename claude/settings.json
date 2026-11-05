@@ -16,7 +16,11 @@
     "PROTECT_FILES_EXTRA_ALLOWED": "",
     "CLAUDE_CODE_PLUGIN_DIRS": "~/Documents/UTILS/AI-pair-programming/claude/dev-mods/tool-history:~/Documents/UTILS/AI-pair-programming/claude/dev-mods/cache-warmup:~/Documents/UTILS/AI-pair-programming/claude/dev-mods/tool-stats:~/Documents/UTILS/AI-pair-programming/claude/dev-mods/skill-model-enforcer",
     "CLAUDE_CODE_PROMPT_CACHE_TTL": "5m",
-    "CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL": "5m"
+    "CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL": "5m",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+    "OTEL_METRICS_EXPORTER": "otlp",
+    "OTEL_EXPORTER_OTLP_PROTOCOL": "grpc",
+    "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
   },
   "attribution": {
     "commit": "",
