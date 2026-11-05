@@ -67,6 +67,52 @@ def test_omits_line_when_project_is_unknown(tmp_path):
     assert LABEL not in run_statusline(tmp_path, {})
 
 
+GRAFANA = "http://127.0.0.1:3001/d/claude-code-cost?var-session="
+
+
+def run_with_cost(tmp_path: Path, telemetry: str | None) -> str:
+    """Run the statusline with a session cost, optionally with telemetry enabled.
+
+    Returns:
+        The stdout of the script.
+    """
+    config_dir = tmp_path / "config"
+    (config_dir / "logs").mkdir(parents=True)
+    (config_dir / ".claude.json").write_text("{}")
+    payload = {
+        "session_id": "abcd1234-0000-0000-0000-000000000000",
+        "workspace": {"current_dir": "/proj/a", "project_dir": "/proj/a"},
+        "cost": {"total_cost_usd": 0.5},
+    }
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDE_CODE_ENABLE_TELEMETRY"}
+    env |= {"CLAUDE_CONFIG_DIR": str(config_dir), "CLAUDE_PROJECT_DIR": str(tmp_path)}
+    if telemetry is not None:
+        env["CLAUDE_CODE_ENABLE_TELEMETRY"] = telemetry
+    result = subprocess.run(
+        ["bash", str(SCRIPT)],
+        input=json.dumps(payload),
+        capture_output=True,
+        text=True,
+        cwd=tmp_path,
+        env=env,
+        check=True,
+    )
+    return result.stdout
+
+
+def test_cost_links_to_session_dashboard_when_telemetry_on(tmp_path):
+    """With telemetry on, the cost segment links to the dashboard filtered by session."""
+    output = run_with_cost(tmp_path, "1")
+    assert f"\x1b]8;;{GRAFANA}abcd1234-0000-0000-0000-000000000000" in output
+    assert "$0.500" in output
+
+
+def test_cost_has_no_link_when_telemetry_off(tmp_path):
+    """Without telemetry, the cost is shown without a dashboard link."""
+    output = run_with_cost(tmp_path, None)
+    assert GRAFANA not in output
+    assert "$0.500" in output
+
 
 def test_weekly_reset_date_from_resets_at(tmp_path):
     """The 7-day reset label is rendered from resets_at on both BSD and GNU date."""

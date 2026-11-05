@@ -382,7 +382,13 @@ if [ -n "$cost" ]; then
     cost_avg=$(LC_NUMERIC=C awk -v a="$cost" -v n="${req_count:-1}" 'BEGIN{printf "%.3f", (n>0 ? a/n : a)}')
     cost=$(LC_NUMERIC=C printf "%.3f" "$cost")
     cost_color="$C_GREEN"
-    cost_info="${SEP}${cost_color}${ICON_COST} \$$cost (+\$${cost_delta} / ${ICON_MEAN}\$${cost_avg} / ↓${req_count:-0})${RESET}"
+    cost_text="\$$cost"
+    # why: compare statusline cost with docker/telemetry Grafana for this exact session.
+    # hazard: env flag reflects current settings; a session started before enabling exports nothing.
+    if [ "${CLAUDE_CODE_ENABLE_TELEMETRY:-0}" = 1 ] && [ -n "$session_id" ]; then
+        cost_text="\e]8;;http://127.0.0.1:3001/d/claude-code-cost?var-session=${session_id}&from=now-24h\a${cost_text}\e]8;;\a"
+    fi
+    cost_info="${SEP}${cost_color}${ICON_COST} ${cost_text} (+\$${cost_delta} / ${ICON_MEAN}\$${cost_avg} / ↓${req_count:-0})${RESET}"
 
 fi
 
