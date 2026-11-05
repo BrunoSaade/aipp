@@ -449,8 +449,9 @@ if [ -n "$five_h" ] || [ -n "$seven_d" ]; then
     # Calculate next weekly reset day from resets_at timestamp
     seven_resets_at=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
     if [ -n "$seven_resets_at" ]; then
-        reset_date=$(date -d "@$seven_resets_at" "+%b %-d")
-        reset_day=$(date -d "@$seven_resets_at" "+%-d")
+        # why: macOS BSD date takes -r <epoch>; GNU date needs -d @<epoch>.
+        reset_date=$(date -r "$seven_resets_at" "+%b %-d" 2>/dev/null || date -d "@$seven_resets_at" "+%b %-d")
+        reset_day=$(date -r "$seven_resets_at" "+%-d" 2>/dev/null || date -d "@$seven_resets_at" "+%-d")
     else
         # Fallback: next Sunday
         dow=$(date +%u)
